@@ -10,7 +10,11 @@
       "Bash(mvn clean verify)",
       "Bash(mvn test -q)",
       "Bash(ls -la target/*.jar)",
-      "Bash(mvn compile -q)"
+      "Bash(mvn compile -q)",
+      "Bash(mvn -v)",
+      "Bash(java -version)",
+      "Bash(python quick_commit.py --help)",
+      "Bash(python quick_commit.py)"
     ]
   }
 }
