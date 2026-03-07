@@ -1,15 +1,23 @@
 # 学生信息管理系统
 
-基于 Java8 + SQLite + Swing 的学生信息管理系统
+一个功能完整的学生信息管理系统，支持 **Swing 桌面版** 和 **Web 版** 两种访问方式。
 
-## 环境要求
+---
 
-- JDK 1.8 或更高版本
-- Maven 3.6+
+## 项目概述
+
+本项目提供两种应用形态：
+
+| 版本 | 技术栈 | 适用场景 |
+|------|--------|----------|
+| **Swing 桌面版** | Java 8 + SQLite + Swing | 单机桌面应用，无需额外配置 |
+| **Web 版** | Spring Boot + Vue 3 + Element Plus | 前后端分离，支持浏览器访问 |
+
+---
 
 ## 快速开始
 
-### 方式一：使用 Maven 运行
+### 方式一：Swing 桌面版（推荐新手）
 
 ```bash
 # 编译项目
@@ -20,101 +28,216 @@ mvn clean package
 
 # 运行程序
 mvn exec:java -Dexec.mainClass="com.student.StudentManagementApp"
-```
-
-### 方式二：直接运行 JAR
-
-```bash
+# 或
 java -jar target/student-management-system-1.0.0.jar
 ```
 
-## 功能特性
+### 方式二：Web 版
 
-### 学生管理
-- 学生列表展示（表格形式）
-- 添加/修改/删除学生信息
-- 搜索学生（按学号或姓名）
-- 数据分页显示
+#### 1. 启动后端（Spring Boot）
+```bash
+# 在项目根目录
+mvn spring-boot:run
+```
+后端 API 地址：http://localhost:8080/api
 
-### 教师管理
-- 教师信息录入（工号、姓名、性别、职称、所属院系、电话、邮箱）
-- 教师列表展示
-- 教师信息修改、删除
-- 按姓名/工号搜索
+#### 2. 启动前端（Vue 3）
+```bash
+cd frontend
+npm install
+npm run dev
+```
+前端访问地址：http://localhost:5173
 
-### 课程管理
-- 课程信息录入
-- 课程列表展示
-- 课程信息修改、删除
+---
 
-### 成绩管理
-- 成绩录入
-- 成绩列表展示
-- 成绩修改、删除
+## 环境要求
 
-### 考勤管理
-- 考勤记录录入（学生、课程、日期、状态、备注）
-- 考勤状态：出勤、缺勤、迟到、请假
-- 按学生/课程/日期范围查询
-- 出勤率统计显示
+| 组件 | 要求 |
+|------|------|
+| JDK | 1.8 或更高版本 |
+| Maven | 3.6+ |
+| Node.js | 16+（仅 Web 版需要） |
+| npm | 8+（仅 Web 版需要） |
 
-### 数据导出
-- 导出学生列表到 Excel
-- 导出教师列表到 Excel
-- 导出课程列表到 Excel
-- 导出成绩列表到 Excel
-- 导出考勤列表到 Excel
+---
 
-### 数据验证
-- 学号/工号格式验证（6-20 位字母或数字）
-- 邮箱格式验证
-- 电话号码格式验证
-- 年龄范围验证（1-150）
-- 成绩范围验证（0-100）
-- 学分范围验证（0-20）
+## 功能模块
 
-## 技术栈
+### 通用功能（两个版本都支持）
 
-- **开发语言**: Java 8
-- **数据库**: SQLite
-- **界面框架**: Swing
-- **项目结构**: Maven
+| 模块 | 功能描述 |
+|------|----------|
+| **学生管理** | 学生信息 CRUD、搜索、分页、数据导出 |
+| **教师管理** | 教师信息 CRUD、搜索、数据导出 |
+| **课程管理** | 课程信息 CRUD、搜索、数据导出 |
+| **成绩管理** | 成绩录入、修改、删除、查询 |
+| **考勤管理** | 考勤记录管理、状态标记、出勤率统计 |
+| **选课管理** | 学生选课、退课、选课列表 |
+| **统计分析** | 数据概览、图表展示（Web 版专属） |
+
+### 版本差异
+
+| 功能 | Swing 桌面版 | Web 版 |
+|------|-------------|--------|
+| 界面风格 | 经典 Swing | 现代化 Element Plus |
+| 数据导出 | Excel 导出 | 开发中 |
+| 统计图表 | JFreeChart | ECharts |
+| 响应式布局 | 不支持 | 支持 |
+
+---
+
+## 技术架构
+
+### Swing 桌面版
+
+```
+┌─────────────────────────────────────┐
+│         View 层 (Swing UI)          │
+│  - MainFrame                        │
+│  - 各种 ManagementPanel             │
+│  - FormDialog                       │
+├─────────────────────────────────────┤
+│       Controller 层 (业务逻辑)       │
+│  - StudentController                │
+│  - TeacherController                │
+│  - CourseController                 │
+│  - ScoreController                  │
+│  - AttendanceController             │
+│  - EnrollmentController             │
+├─────────────────────────────────────┤
+│         Model 层 (数据实体)          │
+│  - Student, Teacher, Course         │
+│  - Score, Attendance, Enrollment    │
+├─────────────────────────────────────┤
+│       DAO 层 (数据访问)              │
+│  - DatabaseHelper (单例)            │
+│  - 各种 DAO (接口 + 实现)            │
+├─────────────────────────────────────┤
+│       Util 层 (工具类)               │
+│  - Validator (数据验证)              │
+│  - ExcelExportUtil (Excel 导出)      │
+└─────────────────────────────────────┘
+```
+
+### Web 版
+
+```
+┌─────────────────────────────────────┐
+│         前端层 (Vue 3)              │
+│  - Element Plus 组件                 │
+│  - ECharts 图表                     │
+│  - Pinia 状态管理                   │
+│  - Vue Router 路由                  │
+├─────────────────────────────────────┤
+│         API 层 (Spring Boot)         │
+│  - StudentApiController             │
+│  - TeacherApiController             │
+│  - CourseApiController              │
+│  - ScoreApiController               │
+│  - AttendanceApiController          │
+│  - EnrollmentApiController          │
+│  - StatisticsApiController          │
+├─────────────────────────────────────┤
+│         Controller 层 (复用)         │
+│         DAO 层 (复用)                │
+│         Model 层 (复用)              │
+└─────────────────────────────────────┘
+```
+
+---
+
+## API 端点（Web 版）
+
+| 模块 | 端点前缀 | HTTP 方法 |
+|------|----------|-----------|
+| 学生管理 | `/api/students` | GET / POST / PUT / DELETE |
+| 教师管理 | `/api/teachers` | GET / POST / PUT / DELETE |
+| 课程管理 | `/api/courses` | GET / POST / PUT / DELETE |
+| 成绩管理 | `/api/scores` | GET / POST / DELETE |
+| 考勤管理 | `/api/attendances` | GET / POST / PUT / DELETE |
+| 选课管理 | `/api/enrollments` | GET / POST / DELETE |
+| 统计分析 | `/api/statistics` | GET |
+
+### API 响应格式
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": { ... },
+  "timestamp": 1772885439136
+}
+```
+
+---
 
 ## 项目结构
 
 ```
 student-management-system/
-├── pom.xml                    # Maven 配置
-├── 设计规划.md                 # 设计文档
-├── README.md                   # 说明文档
+├── pom.xml                         # Maven 配置
+├── README.md                       # 说明文档（本文件）
+├── README_WEB.md                   # Web 版详细文档
+├── 设计规划.md                      # 设计文档
 ├── src/
 │   ├── main/
 │   │   ├── java/com/student/
-│   │   │   ├── StudentManagementApp.java    # 主入口
-│   │   │   ├── model/                       # 实体类
-│   │   │   │   ├── Student.java
-│   │   │   │   ├── Teacher.java
-│   │   │   │   ├── Course.java
-│   │   │   │   ├── Score.java
-│   │   │   │   ├── Attendance.java
-│   │   │   │   └── Enrollment.java
-│   │   │   ├── dao/                         # 数据访问层
-│   │   │   ├── controller/                  # 业务逻辑层
-│   │   │   ├── view/                        # 界面层
-│   │   │   └── util/                        # 工具类
-│   │   └── resources/db/                    # 数据库脚本
+│   │   │   ├── StudentManagementApp.java   # Swing 入口
+│   │   │   ├── StudentWebApp.java          # Web 入口
+│   │   │   ├── model/                      # 实体类 (6 个)
+│   │   │   ├── dao/                        # 数据访问层
+│   │   │   ├── controller/                 # 业务逻辑层 (7 个)
+│   │   │   ├── view/                       # Swing 界面
+│   │   │   ├── api/                        # REST API 控制器 (7 个)
+│   │   │   ├── common/                     # 公共类
+│   │   │   ├── config/                     # 配置类
+│   │   │   └── util/                       # 工具类
+│   │   └── resources/
+│   │       ├── application.properties      # Spring Boot 配置
+│   │       └── db/                         # 数据库脚本
 │   └── test/
-│       └── java/com/student/                # 单元测试
+│       └── java/com/student/               # 单元测试 (141 个)
+├── frontend/                               # Vue 前端项目
+│   ├── src/
+│   │   ├── api/               # API 模块 (7 个)
+│   │   ├── views/             # 页面视图 (8 个)
+│   │   ├── stores/            # Pinia stores (3 个)
+│   │   ├── router/            # 路由配置
+│   │   ├── utils/             # 工具函数
+│   │   ├── layout/            # 布局组件
+│   │   ├── App.vue
+│   │   └── main.js
+│   ├── package.json
+│   ├── vite.config.js
+│   └── index.html
 └── data/
-    └── student.db                           # SQLite 数据库（运行时生成）
+    └── student.db                 # SQLite 数据库
 ```
 
-## 单元测试
+---
 
-项目包含 141 个单元测试，覆盖 Model、DAO、Controller 和 Util 层。
+## 数据库设计
+
+数据库文件：`data/student.db`
+
+| 表名 | 说明 | 核心字段 |
+|------|------|----------|
+| `students` | 学生信息表 | id, student_id, name, gender, age, class_name, phone, email |
+| `teachers` | 教师信息表 | id, teacher_id, name, gender, title, department, phone, email |
+| `courses` | 课程表 | id, course_id, course_name, teacher_id, credits, class_hours |
+| `scores` | 成绩表 | id, student_id, course_id, score, term |
+| `attendances` | 考勤表 | id, student_id, course_id, attendance_date, status, remark |
+| `enrollments` | 选课表 | id, student_id, course_id, enroll_date, status |
+
+---
+
+## 测试
+
+项目包含 **141 个单元测试**，覆盖 Model、DAO、Controller 和 Util 层。
 
 ```bash
-# 运行测试
+# 运行所有测试
 mvn test
 
 # 生成覆盖率报告
@@ -124,46 +247,109 @@ mvn test jacoco:report
 mvn clean verify
 ```
 
+覆盖率要求：行 30%+, 分支 28%+（Swing GUI 代码除外）
+
 覆盖率报告位置：`target/site/jacoco/index.html`
 
-## 使用说明
+---
 
-### 访问各功能模块
+## 构建打包
 
-1. **学生管理**: 菜单"学生 > 学生信息管理"
-2. **教师管理**: 菜单"课程 > 教师信息管理"
-3. **课程管理**: 菜单"课程 > 课程信息管理"
-4. **成绩管理**: 菜单"成绩 > 成绩信息管理"
-5. **考勤管理**: 菜单"考勤 > 考勤信息管理"
+### 后端打包
+```bash
+mvn clean package
+# 生成 target/student-management-system-1.0.0.jar
+```
 
-### 基本操作
+### 前端打包
+```bash
+cd frontend
+npm run build
+# 生成 dist/ 目录
+```
 
-1. 启动程序后，点击"添加"按钮录入新记录
-2. 选中表格中的记录，点击"修改"可编辑信息
-3. 选中表格中的记录，点击"删除"可删除记录
-4. 在搜索框输入关键词，点击"搜索"进行查询
-5. 点击"导出"按钮可将数据导出为 Excel 文件
+---
 
-## 数据库说明
+## 配置说明
 
-数据库文件自动创建在项目目录的 `data/student.db` 路径下。
+### application.properties
 
-### 数据表结构
+```properties
+# Spring Boot 应用配置
+server.port=8080
+spring.application.name=student-management-system
 
-**学生表 (students)**:
-- id, student_id, name, gender, age, class_name, phone, email
+# 日志配置
+logging.level.com.student=INFO
+logging.level.org.springframework.web=INFO
 
-**教师表 (teachers)**:
-- id, teacher_id, name, gender, title, department, phone, email
+# JSON 配置
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=GMT+8
+```
 
-**课程表 (courses)**:
-- id, course_id, course_name, teacher_id, teacher_name, credits, class_hours
+### Vite 代理配置
 
-**成绩表 (scores)**:
-- id, student_id, student_name, course_id, course_name, score, term
+```javascript
+// frontend/vite.config.js
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true
+    }
+  }
+}
+```
 
-**考勤表 (attendances)**:
-- id, student_id, student_name, course_id, course_name, attendance_date, status, remark
+---
 
-**选课表 (enrollments)**:
-- id, student_id, course_id, enroll_date, status
+## 注意事项
+
+1. **端口配置**: 后端默认端口 8080，前端默认端口 5173
+2. **数据库路径**: 保持 `data/student.db` 不变
+3. **编码格式**: 统一使用 UTF-8（POST 请求需设置 charset=utf-8）
+4. **Java 版本**: Java 8
+5. **跨域问题**: 已配置 CORS，开发环境无跨域限制
+
+---
+
+## 技术亮点
+
+1. **渐进式重构**: 保留原有 Swing 代码，新增 Web 前端，平滑过渡
+2. **代码复用**: 复用现有 Controller、DAO、Model 层
+3. **现代化前端**: Vue 3 + Element Plus + ECharts
+4. **统一规范**: 统一的 API 响应格式和错误处理机制
+5. **完整测试**: 141 个单元测试，覆盖率达标
+
+---
+
+## 后续扩展建议
+
+- [ ] 用户登录认证功能
+- [ ] 权限控制（基于角色）
+- [ ] 数据导入（Excel 批量导入）
+- [ ] 前端单元测试
+- [ ] E2E 测试
+- [ ] 更多统计图表和报表
+- [ ] 数据库备份/恢复功能
+
+---
+
+## 相关文档
+
+| 文档 | 说明 |
+|------|------|
+| [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) | **实施总结（2026-03-07）** - Vue Web 版完整实施记录 |
+| [README_WEB.md](README_WEB.md) | Web 版详细实施文档 |
+| [设计规划.md](设计规划.md) | 项目设计规划文档 |
+| [frontend/README.md](frontend/README.md) | 前端项目说明 |
+
+---
+
+## 更新日志
+
+| 日期 | 版本 | 更新内容 |
+|------|------|----------|
+| 2026-03-07 | 1.0.0 | Vue Web 版正式上线，完成 7 个 API 控制器 + 8 个前端页面 |
+| 2026-03-01 | 0.9.0 | Swing 桌面版完成，141 个单元测试通过 |

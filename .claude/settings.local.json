@@ -14,7 +14,23 @@
       "Bash(mvn -v)",
       "Bash(java -version)",
       "Bash(python quick_commit.py --help)",
-      "Bash(python quick_commit.py)"
+      "Bash(python quick_commit.py)",
+      "Bash(mvn clean:*)",
+      "Bash(mvn compile:*)",
+      "Bash(mkdir:*)",
+      "Bash(timeout 30 mvn spring-boot:run:*)",
+      "Bash(mvn compiler:compile:*)",
+      "Bash(netstat:*)",
+      "Bash(curl:*)",
+      "Bash(npm run:*)",
+      "Bash(src/main.js:*)",
+      "Bash(src/router/index.js:*)",
+      "Bash(src/layout/MainLayout.vue:*)",
+      "Bash(src/api/student.js:*)",
+      "Bash(src/api/teacher.js:*)",
+      "Bash(npm install:*)",
+      "Bash(taskkill:*)",
+      "Bash(Get-Process node:*)"
     ]
   }
 }
